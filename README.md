@@ -1,6 +1,7 @@
 An FTP client and server using the TCP protocol 
 
 server quick start:
+
 ./build.sh
 or
 make
@@ -9,6 +10,7 @@ make
 
 
 client quick start:
+
 ./build.sh
 ./main <IP address of the server> <port number>
 
