@@ -47,7 +47,7 @@ int main(int argc, char **argv)
 				client.download(token);	
 
 			}
-			else if (strcmp("cd", token) == 0) {
+			else if (strcmp("put", token) == 0) {
 				token = strtok(NULL," \n");
 				client.upload(token);
 			}
