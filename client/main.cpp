@@ -53,7 +53,7 @@ int main(int argc, char **argv)
  			FILE *in = popen("ls", "r");
   			char temp[128] = {0};
         		while(fgets(temp, sizeof(temp), in) != NULL){
-                		printf("%s\n", temp);
+                		std::cout << temp;
 				memset(temp, 0, sizeof(temp));
 			}
 
