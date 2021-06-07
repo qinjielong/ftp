@@ -1,11 +1,17 @@
 # An FTP client and server using the TCP protocol 
 
+# Envoirment
+- OS:CentOS 7.9
+- Complier编译器 g++ 4.8
+
 # server quick start:
 
+## Build 
 ./build.sh
 or
 make
 
+## Usage
 ./main <port number>
 
 ## 上传的文件会放在运行目录的temp目录下
@@ -13,7 +19,10 @@ make
 
 # client quick start:
 
+## Build
 ./build.sh
+
+## Usage
 ./main <IP address of the server> <port number>
 
 ## List of Commands:

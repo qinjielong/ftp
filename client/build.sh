@@ -4,7 +4,7 @@ g++ -c common/base.cpp ftp_client.cpp -fPIC
  
 g++ -shared -o libftp.so base.o ftp_client.o
 
-g++ -o main main.cpp -L ./ -lftp
+g++ -g -o main main.cpp -L ./ -lftp
 
 rm ./*.o -rf
 
