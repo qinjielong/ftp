@@ -5,6 +5,8 @@
 
 #include <iostream>
 #include <vector>
+
+#include "common/base.h"
 #include "ftp_client.h"
 
 
@@ -25,10 +27,16 @@ int main(int argc, char **argv)
 	std::cout << "get [file]			download file from server" << std::endl;
 	std::cout << "put [file]			upload file to server" << std::endl;
 	
+	char local_path[FILE_NAME_MAX] = {0};	
+	if (NULL == getcwd(local_path, sizeof(local_path)-1)) {
+		std::cout << "pwd error!!" <<  std::endl;
+		return -1;
+	}
+
 	FtpClient client(argv[1], atoi(argv[2]));
 	
 	std::cout << "ftp>";
-	char buff[128] = {0};	
+	char buff[FILE_NAME_MAX] = {0};	
 	while (fgets(buff, sizeof(buff), stdin) != NULL) {
 		if (strcmp("quit\n", buff) == 0) {
    			break;
@@ -73,10 +81,10 @@ int main(int argc, char **argv)
 			}
 			else if (strcmp("get", token) == 0) {
 				token = strtok(NULL," \n");
-				client.download(token);	
-
+				client.download(local_path, token);	
 			}
 			else if (strcmp("put", token) == 0) {
+
 				token = strtok(NULL," \n");
 				client.upload(token);
 			}

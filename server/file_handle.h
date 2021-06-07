@@ -15,5 +15,3 @@ int on_download(const char *name, int connfd);
 int on_upload(const char *name, int connfd); 
 int on_file_list(int connfd);
 
-//common
-int create_directory(const std::string &path);

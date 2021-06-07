@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <sys/stat.h>
 #include <netinet/in.h>
 #include <iostream>
 #include <fstream>
@@ -10,32 +9,6 @@
 #include "common/net_packet.h"
 #include "common/base.h"
 
-int create_directory(const std::string &path)
-{
-	int len = path.length();
-	if (len <= 0 || len > FILE_NAME_MAX) {
-		std::cout << "path length error!" << std::endl;
-		return -1;
-	}
-
-	char temp_path[FILE_NAME_MAX] = {0};
-	for(int i = 0; i < len; i++) {
-		temp_path[i] = path[i];
-		if (temp_path[i] == '\\' || temp_path[i] == '/') {
-			if (file_exists(temp_path)) {
-				continue;	
-			}
-
-			int result = mkdir(temp_path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-			if (0 != result) {
-				std::cout << "mkdir err " << temp_path << std::endl;
-				return -1;
-			}
-		}
-	}
-		
-	return 0;
-}
 
 int on_file_list(int connfd)
 {

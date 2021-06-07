@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+
 class FtpClient
 {
 	public:
@@ -11,7 +12,7 @@ class FtpClient
 		~FtpClient();
 
 		void file_list(std::vector<std::string> &names);
-		bool download(const char *path);
+		bool download(const char *local_path, const char *path);
 		bool upload(const char *path);
 		bool change_dir(const char *path);
 		
@@ -19,5 +20,5 @@ class FtpClient
 		int create_socket();
 
 	private:
-		struct sockaddr_in _server_addr;	
+		struct sockaddr_in _server_addr;
 };

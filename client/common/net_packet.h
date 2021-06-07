@@ -3,10 +3,10 @@
 
 #include "error_code.h"
 #include "ops.h"
+#include "base.h"
 
 #pragma pack(push, 1)	// 1字节对齐
 
-#define FILE_NAME_MAX 128
 #define BUFFER_SIZE 512
 
 

@@ -10,9 +10,10 @@
 
 #include "common/net_packet.h"
 
+
 FtpClient::FtpClient(const char *addr, int port){
 	memset(&_server_addr, 0, sizeof(_server_addr));
-	
+		
 	_server_addr.sin_family = AF_INET;           
 	if (inet_pton(AF_INET, addr, &_server_addr.sin_addr) <= 0) {
         	printf("inet_pton error for %s\n", addr);
@@ -87,7 +88,7 @@ bool FtpClient::upload(const char *path) {
 	std::cout<<"File upload done.\n";
 }
 
-bool FtpClient::download(const char *path) {
+bool FtpClient::download(const char *local_path, const char *path) {
 	int connfd = create_socket();
 	NetPacket packet;
 	packet.ops = 4;
@@ -101,29 +102,42 @@ bool FtpClient::download(const char *path) {
 		close(connfd);			
 		return false;
 	}
+
+	std::string temp = local_path;
+	if (path[0] == '/' || path[0] == '\\'){
+		temp.append("/temp");
+        }else{
+		temp.append("/temp/");
+        }
+
+	temp.append(path);
+        if (0 != create_directory(temp)) {
+                std::cout << "create directory error! " << temp << std::endl;
+                return false;
+        }
+
+        if (file_exists(temp.c_str())) {
+                std::cout << "file exist, should override it!" << std::endl;
+        }
 	
-	std::cout << "download: opening the file " << path << " for writing" << std::endl;
-	std::ofstream os(path, std::ios::out | std::ios::binary);
-	if (!os)  
-	{
+	std::cout << "download: opening the file " << temp << " for writing" << std::endl;
+	std::ofstream os(temp.c_str(), std::ios::out | std::ios::binary);
+	if (!os) {
 		std::cout << "download: can not open!" << std::endl; 
 		close(connfd);			
 		return false;
 	}
 
-        while (true)
-        {
+        while (true) {
                 packet.init();
                 int count = recv(connfd, (char *)&packet, sizeof(packet), 0);
-                if (count <= 0)
-                {
+                if (count <= 0) {
                         printf("recv error!\n");
                         break;
                 }
 		
 		os.write(packet.buff, packet.length);	
-		if (packet.finish)
-		{
+		if (packet.finish) {
 			printf("recv finish!!\n");
 			break;
 		}

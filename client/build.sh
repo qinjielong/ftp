@@ -1,10 +1,12 @@
 #!/bin/bash
 
-g++ -c ftp_client.cpp -fPIC -o ftp_client.o
+g++ -c common/base.cpp ftp_client.cpp -fPIC
  
-g++ -shared -o libftp.so ftp_client.o
+g++ -shared -o libftp.so base.o ftp_client.o
 
 g++ -o main main.cpp -L ./ -lftp
+
+rm ./*.o -rf
 
 # temp
 export LD_LIBRARY_PATH=./
