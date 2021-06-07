@@ -31,3 +31,5 @@ int create_directory(const std::string &path);
 void replace_all(std::string &str, const std::string &old_value, const std::string &new_value);
 
 std::string get_file_name(const char *path);
+
+bool is_dir(const char *path);

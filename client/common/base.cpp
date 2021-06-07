@@ -51,3 +51,16 @@ std::string get_file_name(const char *path) {
         }
 	return temp;
 }
+
+bool is_dir(const char *path) {
+	struct stat s_buf;
+	stat(path, &s_buf);
+ 
+	if(S_ISDIR(s_buf.st_mode)) {
+		return true;
+	}
+ 
+	if(S_ISREG(s_buf.st_mode)) {
+	}
+	return false;	
+}

@@ -84,9 +84,13 @@ int main(int argc, char **argv)
 				client.download(local_path, token);	
 			}
 			else if (strcmp("put", token) == 0) {
-
 				token = strtok(NULL," \n");
-				client.upload(token);
+				
+				if (is_dir(token)) {
+					printf("it is a dir\n");
+				}else{	
+					client.upload(token);
+				}
 			}
 			else {
 				std::cerr << "Error in command. Check Command" << std::endl;

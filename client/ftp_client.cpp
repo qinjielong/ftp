@@ -88,7 +88,6 @@ bool FtpClient::upload(const char *path) {
 	}
 
 	is.close();
-	
 	// 文件发送完成
 	p.init();
 	p.finish = true;
