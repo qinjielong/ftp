@@ -56,7 +56,9 @@ bool FtpClient::upload(const char *path) {
 	int connfd = create_socket();
 	NetPacket p;
 	p.ops = 3;
-	memcpy(p.buff, path, strlen(path));
+	std::string name = get_file_name(path);
+	
+	memcpy(p.buff, name.c_str(), name.length());
 	
 	send(connfd, (char*)&p, sizeof(p), 0);
 		
@@ -103,6 +105,7 @@ bool FtpClient::download(const char *local_path, const char *path) {
 		return false;
 	}
 
+	
 	std::string temp = local_path;
 	if (path[0] == '/' || path[0] == '\\'){
 		temp.append("/temp");
