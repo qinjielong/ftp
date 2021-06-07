@@ -123,7 +123,7 @@ int on_download(const char *path, int connfd)
 		return -1;
 	}
 
-        while (is) {
+        while (!is.eof()) {
                 packet.init();
         	is.read(packet.buff, BUFFER_SIZE);       
 		packet.length = is.gcount();		

@@ -75,7 +75,7 @@ bool FtpClient::upload(const char *path) {
 		return false;		
 	}
 	
-	while (is) {
+	while (!is.eof()) {
 		p.init();
 		
 		is.read(p.buff, BUFFER_SIZE);
