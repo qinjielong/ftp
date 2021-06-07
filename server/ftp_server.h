@@ -11,7 +11,7 @@ class FtpServer
 		FtpServer();
 		~FtpServer();
 	
-		void start(int port);
+		bool start(int port);
 		
 		void open_net(int port);
             	
@@ -22,4 +22,5 @@ class FtpServer
         
 	private:
                 std::map<int, IHandler*> _handlers;     //消息处理器表
+		char _init_path[FILE_NAME_MAX];		//启服时的路径，上传的文件会放这里
 };

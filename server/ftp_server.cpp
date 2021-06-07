@@ -10,7 +10,8 @@
 
 FtpServer::FtpServer()
 {
- 
+	_handlers.clear();
+	memset(_init_path, 0, sizeof(_init_path)); 
 
 }
 
@@ -42,11 +43,18 @@ void FtpServer::unregister_handler(int ops)
 	}
 }
 
-void FtpServer::start(int port)
+bool FtpServer::start(int port)
 {
  	// start worker
+ 	// to do
+ 
+	if (NULL == getcwd(_init_path, sizeof(_init_path)-1)) {
+		std::cout << "pwd error!!" <<  std::endl;
+		return false;
+	}
 
 	open_net(port);
+	return true;
 }
 
 void FtpServer::open_net(int port)
@@ -56,7 +64,6 @@ void FtpServer::open_net(int port)
 
 	// Create a socket for the soclet
  	//If sockfd<0 there was an error in the creation of the socket
- 	
 	int listenfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (listenfd < 0) 
 	{
@@ -91,6 +98,9 @@ void FtpServer::open_net(int port)
 		
 		// 创建线程处理		
 		pthread_t recv_id ; 
-		pthread_create(&recv_id, NULL, recv_msg_from_client, &connfd);  
+		ThreadParam param;
+		param.connfd = connfd;
+		memcpy(param.path, _init_path, sizeof(_init_path));	
+		pthread_create(&recv_id, NULL, recv_msg_from_client, &param);  
 	}
 }
