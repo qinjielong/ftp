@@ -14,8 +14,7 @@ int on_file_list(int connfd)
 {
 	NetPacket packet;
 	FILE *in = popen("ls", "r");
-	if(!in)
-	{
+	if(!in) {
 		printf("open error\n");
 		packet.err = ERROR_BASE_UNKNOWN; 
 		send(connfd, (char*)&packet, sizeof(packet), 0);
@@ -24,7 +23,7 @@ int on_file_list(int connfd)
 	
 	char temp[FILE_NAME_MAX] = {0};
 	while(fgets(temp, sizeof(temp), in)!=NULL){
-		printf("ls:%s\n", temp);	
+		std::cout << temp;	
 		
 		FileInfo f;
 		memcpy(f.name, temp, sizeof(temp));
@@ -33,12 +32,14 @@ int on_file_list(int connfd)
 		memcpy(packet.buff, (char*)&f, sizeof(f));
  
 		int count = send(connfd, (char *)&packet, sizeof(packet), 0);
-                if (count <= 0)
-		{
+                if (count <= 0) {
 			std::cout << "send error" << std::endl;
 			break; 
 		}
+
+		memset(temp, 0, sizeof(temp));
 	}
+
 	pclose(in);
 
 	packet.finish = true;
@@ -100,6 +101,7 @@ int on_upload(const std::string & path_server, const char *path, int connfd)
 		}
 		os.write(packet.buff, packet.length);	
 	}	
+	
 	os.close();
 	std::cout << "on_upload done" << std::endl;
 	return 0; 
@@ -156,12 +158,10 @@ void* recv_msg_from_client(void* arg)
 	std::string path_server = param->path;
 	
 	NetPacket packet;
-	while (true)
-	{
+	while (true) {
 		packet.init();
 		int count = recv(connfd, (char *)&packet, sizeof(packet), 0);
-		if (count <= 0) 
-		{
+		if (count <= 0) {
 			printf("recv error!\n");
 			break;
 		}

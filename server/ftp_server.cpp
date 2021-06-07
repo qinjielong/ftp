@@ -12,7 +12,6 @@ FtpServer::FtpServer()
 {
 	_handlers.clear();
 	memset(_init_path, 0, sizeof(_init_path)); 
-
 }
 
 FtpServer::~FtpServer()
@@ -24,8 +23,7 @@ FtpServer::~FtpServer()
 bool FtpServer::register_handler(int ops, IHandler *handler)
 {
 	auto iter = _handlers.find(ops);
-	if (iter != _handlers.end())
-	{
+	if (iter != _handlers.end()) {
 		printf("already register ops:%d\n", ops);
 		return false;
 	}
@@ -37,8 +35,7 @@ bool FtpServer::register_handler(int ops, IHandler *handler)
 void FtpServer::unregister_handler(int ops)
 {
 	auto iter = _handlers.find(ops);
-	if (iter != _handlers.end())
-	{
+	if (iter != _handlers.end()) {
 		_handlers.erase(iter);
 	}
 }
@@ -65,8 +62,7 @@ void FtpServer::open_net(int port)
 	// Create a socket for the soclet
  	//If sockfd<0 there was an error in the creation of the socket
 	int listenfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (listenfd < 0) 
-	{
+	if (listenfd < 0) {
   		printf("Problem in creating the socket\n");
   		exit(2);
  	}	
@@ -86,12 +82,10 @@ void FtpServer::open_net(int port)
 	struct sockaddr_in client_addr;
   	socklen_t addr_len = sizeof(client_addr);
 
-	for ( ; ; ) 
-	{
+	for ( ; ; ) {
   		//accept a connection
   		int connfd = accept (listenfd, (struct sockaddr *) &client_addr, &addr_len);
-		if (connfd < 0)  
-    		{  
+		if (connfd < 0) {  
         		printf("error comes when call accept!\n");  
         		break;  
     		}  
