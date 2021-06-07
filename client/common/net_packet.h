@@ -7,7 +7,7 @@
 
 #pragma pack(push, 1)	// 1字节对齐
 
-#define BUFFER_SIZE 512
+#define BUFFER_SIZE 1024
 
 
 //文件信息

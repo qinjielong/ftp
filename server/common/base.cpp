@@ -45,9 +45,9 @@ std::string get_file_name(const char *path) {
 	std::string temp = path;
 	replace_all(temp, "\\", "/");
 
-	auto pos = temp.rfind('/');
+	std::string::size_type pos = temp.rfind('/');
         if (std::string::npos != pos){
-                temp = temp.substr(pos);
+                temp = temp.substr(pos + 1);
         }
 	return temp;
 }

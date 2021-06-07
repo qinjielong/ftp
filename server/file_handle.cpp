@@ -81,30 +81,27 @@ int on_upload(const std::string & path_server, const char *path, int connfd)
 	
 	std::cout << "on_upload: opening the file " << temp  << " for writing" << std::endl;
 	std::ofstream os(temp.c_str(), std::ios::out | std::ios::binary);
-	if (!os)  
-	{
+	if (!os) {
 		std::cout << "on_upload: can not open!" << std::endl; 
 		return -1;
 	}
 
-        while (true)
-        {
+        while (true) {
                 packet.init();
                 int count = recv(connfd, (char *)&packet, sizeof(packet), 0);
-                if (count <= 0)
-                {
+                if (count <= 0) {
                         printf("recv error!\n");
                         break;
                 }
 		
-		os.write(packet.buff, packet.length);	
-		if (packet.finish)
-		{
+		if (packet.finish && 0 == packet.length) {
+			std::cout << "file recv finish!" << std::endl;
 			break;
 		}
+		os.write(packet.buff, packet.length);	
 	}	
 	os.close();
-	std::cout << "file recv finish!" << std::endl;
+	std::cout << "on_upload done" << std::endl;
 	return 0; 
 }
 
@@ -119,29 +116,33 @@ int on_download(const char *path, int connfd)
 	
 	std::cout << "on_download: opening the file " << path << " for reading" << std::endl;
 	std::ifstream is (path, std::ios::in | std::ios::binary);
-	if (!is)  
-	{
+	if (!is) {
 		std::cout << "on_download: can not open!" << std::endl; 
-		return 0;
+		return -1;
 	}
 
-        while (is)
-        {
+        while (is) {
                 packet.init();
         	is.read(packet.buff, BUFFER_SIZE);       
 		packet.length = is.gcount();		
-		if (packet.length < BUFFER_SIZE)
-			packet.finish = true; 
 	 	
 		int count = send(connfd, (char *)&packet, sizeof(packet), 0);
-                if (count <= 0)
-		{
+                if (count <= 0) {
 			std::cout << "send error" << std::endl;
 			break; 
 		}
 	}
 	is.close();
-	std::cout << "file send finish!" << std::endl; 
+	
+        packet.init();
+	packet.finish = true; 
+	int count = send(connfd, (char *)&packet, sizeof(packet), 0);
+        if (count <= 0) {
+		std::cout << "finish msg send error" << std::endl;
+		return -1;
+	}
+		
+	std::cout << "on_download done" << std::endl;
 	return 0;
 }
 

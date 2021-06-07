@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 			client.file_list(vec);
 			std::vector<std::string>::iterator it = vec.begin();
 	 		for(; it != vec.end(); ++it) {
-	 			std::cout << (*it) << std::endl;
+	 			std::cout << (*it);
 	 		}	
 		}
 		else if (strcmp("ls-c\n", buff) == 0) {
