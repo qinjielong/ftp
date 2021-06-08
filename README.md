@@ -4,7 +4,7 @@
 - OS:CentOS 7.9
 - Complier编译器 g++ 4.8
 
-# server quick start:
+# Server quick start:
 
 ## Build 
 ./build.sh
@@ -17,7 +17,7 @@ make
 ## 上传的文件会放在运行目录的temp目录下
 
 
-# client quick start:
+# Client quick start:
 
 ## Build
 ./build.sh
@@ -35,7 +35,7 @@ make
 ### get [file] ------------- download file from server
 ### put [file] ------------- upload file to server
 
-## example
+## Example
 ### get /user/local/test.txt
 ### get test.txt
 
