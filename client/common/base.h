@@ -1,4 +1,5 @@
 #pragma once
+#include <stdio.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <string>
@@ -33,3 +34,5 @@ void replace_all(std::string &str, const std::string &old_value, const std::stri
 std::string get_file_name(const char *path);
 
 bool is_dir(const char *path);
+
+size_t get_file_size(const char *path);

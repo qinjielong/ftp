@@ -29,39 +29,60 @@ FtpClient::~FtpClient(){
 void FtpClient::file_list(std::vector<std::string> &names) {
 	int connfd = create_socket();
 	NetPacket packet;
-	packet.ops = 2;
+	packet.ops = OPS_FTP_FILE_LIST;
 	
 	send(connfd, (char*)&packet, sizeof(packet), 0);
 	
-        while (true) {
+	size_t total = 0;
+        size_t recv_total = 0;
+	while (true) {
                 packet.init();
                 int count = recv(connfd, (char *)&packet, sizeof(packet), 0);
                 if (count <= 0) {
                         printf("recv error!\n");
                         break;
                 }
-	
-		if (packet.finish) {
-			printf("recv finish!!\n");
+
+		if (packet.err != ERROR_BASE_SUCCESS) {
+			printf("param error:%d\n", packet.err);
 			break;
 		}
+
+	
 		FileInfo *f = (FileInfo *)packet.buff;
 		names.push_back(f->name);
+		
+		total = packet.total;
+		recv_total += packet.length;
+		if (recv_total == total) {
+			break;
+		}
 	}
+
 	close(connfd);			
+	if (recv_total != total) {
+		printf("error! need:%d, recv:%d\n", total, recv_total);
+	}else{
+		printf("file list done\n");
+	}
 }
 
 bool FtpClient::upload(const char *path) {
 	int connfd = create_socket();
 	
 	// 通知服务器开始上传文件
+	size_t total = get_file_size(path);
 	NetPacket p;
-	p.ops = 3;
+	p.ops = OPS_FTP_FILE_UPLOAD;
+	p.total = total;
 	std::string name = get_file_name(path);
 	memcpy(p.buff, name.c_str(), name.length());
+	
 	send(connfd, (char*)&p, sizeof(p), 0);
-	recv(connfd, (char*)&p, sizeof(p), 0);
-	if (p.err != 0){
+	
+	p.init();
+	int count = recv(connfd, (char*)&p, sizeof(p), 0);
+	if (count <= 0 || p.err != 0){
 		std::cout << "put err:" << p.err << std::endl;
 	}
 	
@@ -75,6 +96,7 @@ bool FtpClient::upload(const char *path) {
 		return false;		
 	}
 	
+	size_t send_total = 0;
 	while (!is.eof()) {
 		p.init();
 		
@@ -85,20 +107,17 @@ bool FtpClient::upload(const char *path) {
 			std::cout << "upload send msg error" << std::endl;
 			break;
 		}
+		send_total += p.length;
 	}
 
 	is.close();
-	// 文件发送完成
-	p.init();
-	p.finish = true;
-	int count = send(connfd, (char*)&p, sizeof(p), 0);
-	if (count <= 0) {
-		std::cout << "upload send finish msg error" << std::endl;
-		return false;
-	}
-
+	
 	close(connfd);			
-	std::cout<<"File upload done" << std::endl;
+	if (send_total != total) {
+		printf("error! need:%d, send:%d\n", total, send_total);
+	}else{
+		printf("file upload done\n");
+	}
 	return true;
 }
 
@@ -107,12 +126,15 @@ bool FtpClient::download(const char *local_path, const char *path) {
 	
 	// 告诉服务器开始下载文件
 	NetPacket packet;
-	packet.ops = 4;
+	packet.ops = OPS_FTP_FILE_DOWNLOAD;
 	memcpy(packet.buff, path, strlen(path));
+	
 	send(connfd, (char*)&packet, sizeof(packet), 0);
-	recv(connfd, (char*)&packet, sizeof(packet), 0);	
-	if (packet.err != 0){
-		std::cout << "put err:" << packet.err << std::endl;
+	
+	packet.init();
+	int count = recv(connfd, (char*)&packet, sizeof(packet), 0);	
+	if (count <= 0 || packet.err != 0){
+		std::cout << "get err:" << packet.err << std::endl;
 		close(connfd);			
 		return false;
 	}
@@ -122,7 +144,6 @@ bool FtpClient::download(const char *local_path, const char *path) {
 	temp.append("/temp/");
 	
 	std::string name = get_file_name(path);
-	printf("path:%s, name:%s", path, name.c_str());
 	temp.append(name);
         if (0 != create_directory(temp)) {
                 std::cout << "create directory error! " << temp << std::endl;
@@ -143,6 +164,8 @@ bool FtpClient::download(const char *local_path, const char *path) {
 		return false;
 	}
 
+	size_t total = packet.total;
+	size_t recv_total = 0;
         while (true) {
                 packet.init();
                 int count = recv(connfd, (char *)&packet, sizeof(packet), 0);
@@ -151,23 +174,29 @@ bool FtpClient::download(const char *local_path, const char *path) {
                         break;
                 }
 		
-		if (packet.finish && 0 == packet.length) {
-			printf("recv finish!!\n");
+		os.write(packet.buff, packet.length);	
+		recv_total += packet.length;
+		
+		if (recv_total == total) {
 			break;
 		}
-		os.write(packet.buff, packet.length);	
 	}
 	
 	os.close();
 	close(connfd);			
-	std::cout << "download done" << std::endl;
+	
+	if (recv_total != total) {
+		printf("error! need:%d, recv:%d\n", total, recv_total);
+	}else{
+		printf("file download done\n");
+	}
 	return true;
 }
 
 bool FtpClient::change_dir(const char *path) {
 	int connfd = create_socket();
 	NetPacket packet;
-	packet.ops = 5;
+	packet.ops = OPS_FTP_CHANGE_DIR;
 	memcpy(packet.buff, path, strlen(path));
 	send(connfd, (char*)&packet, sizeof(packet), 0);
 	close(connfd);			

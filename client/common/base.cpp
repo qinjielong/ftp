@@ -64,3 +64,15 @@ bool is_dir(const char *path) {
 	}
 	return false;	
 }
+
+size_t get_file_size(const char *path){
+	FILE* fp = fopen(path, "r");
+	if (NULL == fp) {
+		return 0;
+	}
+
+	fseek(fp, 0, SEEK_END);
+	size_t size = ftell(fp);
+	fclose(fp);
+	return size; //单位是：byte
+}

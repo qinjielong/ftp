@@ -24,7 +24,7 @@ typedef struct NetPacket
 {
 	int ops;			//操作码
 	int err;			//错误码
-	bool finish;			//发送完毕					
+	size_t total;			//总的包体大小
 	int length;			//包体长度
 	char buff[BUFFER_SIZE];         //数据包缓冲区
 	NetPacket()
@@ -35,7 +35,7 @@ typedef struct NetPacket
 	{
 		ops = 0;
 		err = ERROR_BASE_SUCCESS; 
-		finish = false;
+		total = 0;
 		length = 0;
 		memset(buff, 0, sizeof(buff)); 	
 	}
