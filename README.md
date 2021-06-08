@@ -7,9 +7,8 @@
 # Server quick start:
 
 ## Build 
+// you can also use make  
 ./build.sh
-or
-make
 
 ## Usage
 ./main [port number]
