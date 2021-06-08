@@ -12,7 +12,7 @@ or
 make
 
 ## Usage
-./main <port number>
+./main [port number]
 
 ## 上传的文件会放在运行目录的temp目录下
 
@@ -23,7 +23,7 @@ make
 ./build.sh
 
 ## Usage
-./main <IP address of the server> <port number>
+./main [IP address of the server] [port number]
 
 ## List of Commands:
 ### quit ------------------- exit process
