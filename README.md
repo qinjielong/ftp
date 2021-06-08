@@ -35,11 +35,11 @@ make
 ### get [file] ------------- download file from server
 ### put [file] ------------- upload file to server
 
-## Example
-### get /user/local/test.txt
+## Examples
+### get /usr/local/test.txt
 ### get test.txt
 
-### put /user/local/test.txt
+### put /usr/local/test.txt
 ### put test.txt
 
 ## 下载的文件会放在运行目录的temp目录下
