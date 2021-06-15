@@ -70,7 +70,7 @@ LDFLAGS   = -lm -lpthread
 
 # The directories in which source files reside.
 # If not specified, only the current directory will be serached.
-SRCDIRS   = ./ ./common
+SRCDIRS   = . ./common
 
 INCDIRS   = #./base/mom/net/include ./lib/libuv/include ./base/mom/third/spdlog/include ./include ./base/base/include 
 	
